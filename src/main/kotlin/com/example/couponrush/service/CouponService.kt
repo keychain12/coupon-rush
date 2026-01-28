@@ -19,9 +19,9 @@ class CouponService(
             throw IllegalStateException("이미 발급받은 쿠폰입니다.")
         }
 
-        //2. 쿠폰조회
-        val coupon = couponRepository.findById(couponId)
-            .orElseThrow { IllegalArgumentException("존재하지 않는 쿠폰입니다.") }
+        //2. 쿠폰조회 (Lock 걸기)
+        val coupon = couponRepository.findByIdWithLock(couponId)
+            ?: throw IllegalArgumentException("존재하지 않는 쿠폰입니다")
 
         //3. 발급 가능 여부 확인 및 발급
         coupon.issue()
